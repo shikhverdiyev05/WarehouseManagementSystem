@@ -1,0 +1,141 @@
+﻿@model WarehouseMS.Models.Warehouse
+
+@{
+    ViewData["Title"] = Model.Name + " - Detallar";
+}
+
+<div class="glass-card p-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="fas fa-warehouse text-primary me-2"></i> @Model.Name</h2>
+        <div>
+            <button class="btn btn-success" onclick="createNewShelf(@Model.Id)">
+                <i class="fas fa-plus"></i> Yeni Rəf
+            </button>
+            <a asp-action="Index" class="btn btn-secondary">Geri</a>
+        </div>
+    </div>
+
+    <div class="row" id="shelfGrid">
+        @foreach (var shelf in Model.Shelves)
+        {
+            <div class="col-md-6 mb-3" id="shelf-card-@shelf.Id">
+                <div class="card shadow-sm border-primary h-100">
+                    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                        <span>
+                            <i class="fas fa-th me-2"></i> Rəf:
+                            <strong id="code-display-@shelf.Id">@shelf.ShelfCode</strong>
+                        </span>
+                        <div>
+                            <button onclick="openEditShelf(@shelf.Id, '@shelf.ShelfCode')" class="btn btn-sm btn-light text-warning me-1">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button onclick="confirmDeleteShelf(@shelf.Id)" class="btn btn-sm btn-light text-danger">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body p-2">
+                        <table class="table table-sm mb-0">
+                            <thead>
+                                <tr class="small text-muted">
+                                    <th>Məhsul</th>
+                                    <th class="text-end">Miqdar</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (shelf.Stocks != null && shelf.Stocks.Any())
+                                {
+                                    @foreach (var stock in shelf.Stocks)
+                                    {
+                                        <tr>
+                                            <td>@stock.Product?.Name</td>
+                                            <td class="text-end fw-bold">@stock.Quantity @stock.Product?.Unit</td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="2" class="text-center text-muted small italic">Rəf boşdur</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // YENİ RƏF YARATMAQ
+        function createNewShelf(wId) {
+            Swal.fire({
+                title: 'Yeni Rəf Kodu',
+                input: 'text',
+                placeholder: 'Məsələn: A-101',
+                showCancelButton: true,
+                confirmButtonText: 'Əlavə et',
+                cancelButtonText: 'Ləğv et'
+            }).then((result) => {
+                if (result.isConfirmed && result.value) {
+                    $.post("/Warehouse/CreateShelf", { warehouseId: wId, shelfCode: result.value }, function (res) {
+                        if (res.success) {
+                            location.reload(); // Sadəlik üçün səhifəni yeniləyirik
+                        } else {
+                            Swal.fire('Xəta!', res.message, 'error');
+                        }
+                    });
+                }
+            });
+        }
+
+        // RƏFİ SİLMƏK
+        function confirmDeleteShelf(id) {
+            Swal.fire({
+                title: 'Əminsiniz?',
+                text: "İçində məhsul olan rəfi silmək olmaz!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                confirmButtonText: 'Bəli, sil!',
+                cancelButtonText: 'Geri'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.post("/Warehouse/DeleteShelf/" + id, function (res) {
+                        if (res.success) {
+                            $("#shelf-card-" + id).fadeOut(500);
+                        } else {
+                            Swal.fire('Xəta!', res.message, 'error');
+                        }
+                    });
+                }
+            });
+        }
+
+        // RƏF ADINI REDAKTƏ ETMƏK
+        function openEditShelf(id, oldCode) {
+            Swal.fire({
+                title: 'Rəf adını dəyiş',
+                input: 'text',
+                inputValue: oldCode,
+                showCancelButton: true,
+                confirmButtonText: 'Yadda saxla'
+            }).then((result) => {
+                if (result.isConfirmed && result.value) {
+                    $.post("/Warehouse/EditShelf", { id: id, newCode: result.value }, function (res) {
+                        if (res.success) {
+                            $("#code-display-" + id).text(res.code);
+                            Swal.fire('Yeniləndi!', '', 'success');
+                        } else {
+                            Swal.fire('Xəta!', res.message, 'error');
+                        }
+                    });
+                }
+            });
+        }
+    </script>
+}

@@ -1,0 +1,96 @@
+﻿:root {
+    --glass-bg: rgba(255, 255, 255, 0.1);
+    --glass-border: rgba(255, 255, 255, 0.2);
+}
+
+.glass-effect {
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    border-radius: 15px;
+    padding: 20px;
+    transition: transform 0.3s ease;
+}
+
+.stat-card {
+    text-align: center;
+    color: #fff;
+    margin-bottom: 20px;
+}
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+    }
+
+.purple {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.red {
+    background: linear-gradient(135deg, #ff6b6b 0%, #ee5253 100%);
+}
+
+.blue {
+    background: linear-gradient(135deg, #48c6ef 0%, #6f86d6 100%);
+}
+
+.green {
+    background: linear-gradient(135deg, #20bf55 0%, #01baef 100%);
+}
+
+.chart-container {
+    background: #fff;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+}
+
+.glass-card {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.text-indigo {
+    color: #4e73df;
+    font-weight: 700;
+}
+
+.glass-button {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    color: white;
+}
+
+#sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 100;
+    padding: 48px 0 0; /* Yuxarıdakı Navbar-ın hündürlüyünə görə */
+    box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+    /* 🌟 Scroll üçün əsas hissə */
+    overflow-y: auto;
+    height: 100vh;
+}
+
+    /* 🌟 Scrollbar-ın dizaynını WMS PRO-ya uyğun incəltmək və rəngləmək üçün (Webkit brauzerləri üçün) */
+    #sidebar::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    #sidebar::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    #sidebar::-webkit-scrollbar-thumb {
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 10px;
+    }
+
+        #sidebar::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 0, 0, 0.4);
+        }

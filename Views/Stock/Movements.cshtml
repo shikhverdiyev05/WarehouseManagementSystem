@@ -1,0 +1,79 @@
+﻿@model IEnumerable<WarehouseMS.Models.StockMovement>
+
+@{
+    ViewData["Title"] = "Stok Hərəkətləri Tarixçəsi";
+}
+
+<div class="card shadow-sm border-0" style="border-radius: 15px;">
+    <div class="card-body p-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4 class="m-0 fw-bold text-secondary">
+                <i class="fas fa-history me-2 text-primary"></i>Stok Giriş-Çıxış Tarixçəsi
+            </h4>
+            <a asp-controller="Stock" asp-action="Create" class="btn btn-primary btn-sm px-3" style="border-radius: 8px;">
+                <i class="fas fa-plus me-1"></i> Yeni Stok Girişi
+            </a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-striped align-middle" id="movementsTable">
+                <thead class="bg-light">
+                    <tr>
+                        <th style="width: 20%;">Tarix</th>
+                        <th style="width: 40%;">Məhsul Adı</th>
+                        <th style="width: 20%;">Əməliyyat Növü</th>
+                        <th style="width: 20%;">Miqdar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="text-muted">@item.Date.ToString("dd.MM.yyyy HH:mm")</td>
+                                <td class="fw-bold text-dark">@item.Product?.Name</td>
+                                <td>
+                                    @if (item.Type == "In")
+                                    {
+                                        <span class="badge rounded-pill bg-success-subtle text-success px-3 py-2">
+                                            <i class="fas fa-arrow-down me-1"></i> Giriş
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge rounded-pill bg-danger-subtle text-danger px-3 py-2">
+                                            <i class="fas fa-arrow-up me-1"></i> Çıxış
+                                        </span>
+                                    }
+                                </td>
+                                <td class="fw-bold @(item.Type == "In" ? "text-success" : "text-danger")">
+                                    @(item.Type == "In" ? "+" : "-")@item.Quantity
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="4" class="text-center text-muted py-4">Hələ ki heç bir stok hərəkəti qeydə alınmayıb.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            $('#movementsTable').DataTable({
+                "order": [[0, "desc"]], // Ən son hərəkətlər həmişə birinci görünsün
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.13.4/i18n/az-AZ.json"
+                }
+            });
+        });
+    </script>
+}

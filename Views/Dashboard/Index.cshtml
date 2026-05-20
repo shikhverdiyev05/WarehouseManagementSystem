@@ -1,0 +1,99 @@
+﻿@model IEnumerable<WarehouseMS.Models.Stock>
+
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <div class="card bg-primary text-white border-0 shadow">
+            <div class="card-body">
+                <h5>Məhsul Sayı</h5>
+                <h2>@ViewBag.TotalProducts</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card bg-info text-white border-0 shadow">
+            <div class="card-body">
+                <h5>Kateqoriyalar</h5>
+                <h2>@ViewBag.TotalCategories</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card bg-danger text-white border-0 shadow">
+            <div class="card-body">
+                <h5>Kritik Stok</h5>
+                <h2>@ViewBag.LowStockCount</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow-sm border-0 glass-card">
+    <div class="card-header bg-white border-0 py-3">
+        <h5 class="m-0 fw-bold">Son Stok Vəziyyəti</h5>
+    </div>
+    <div class="card-body">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Məhsul</th>
+                    <th>Yerləşdiyi Yer</th>
+                    <th>Vəziyyət</th>
+                    <th>Miqdar</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var m in Model)
+                {
+                    <tr>
+                        <td>@m.Product?.Name</td>
+                        <td class="text-muted small">@m.Warehouse?.Name / @m.Shelf?.ShelfCode</td>
+                        <td>
+                            @if (m.Type == "In")
+                            {
+                                <span class="badge bg-success">Mədaxil</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">Məxaric</span>
+                            }
+                        </td>
+                        <td class="fw-bold">@m.Quantity</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Line Chart - Stok Hərəkəti
+        const ctxLine = document.getElementById('lineChart').getContext('2d');
+        new Chart(ctxLine, {
+            type: 'line',
+            data: {
+                labels: ['Yan', 'Fev', 'Mar', 'Apr', 'May', 'İyun'],
+                datasets: [{
+                    label: 'Giriş',
+                    data: [12, 19, 3, 5, 2, 3],
+                    borderColor: '#6366f1',
+                    tension: 0.4
+                }]
+            }
+        });
+
+        // Pie Chart - Kateqoriyalar
+        const ctxPie = document.getElementById('pieChart').getContext('2d');
+        new Chart(ctxPie, {
+            type: 'doughnut',
+            data: {
+                labels: ['Elektronika', 'Geyim', 'Qida'],
+                datasets: [{
+                    data: [30, 20, 50],
+                    backgroundColor: ['#6366f1', '#ec4899', '#10b981']
+                }]
+            }
+        });
+    </script>
+}

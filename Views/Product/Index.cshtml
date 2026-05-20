@@ -1,0 +1,125 @@
+﻿@model IEnumerable<WarehouseMS.Models.Product>
+
+@{
+    ViewData["Title"] = "Məhsullar";
+}
+
+<div class="card shadow-sm border-0" style="border-radius: 15px;">
+    <div class="card-body p-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4 class="m-0 fw-bold text-secondary">
+                <i class="fas fa-boxes me-2 text-primary"></i>Məhsul Portfeli
+            </h4>
+            <a asp-action="Create" class="btn btn-primary btn-sm px-3" style="border-radius: 8px;">
+                <i class="fas fa-plus me-1"></i> Yeni Məhsul
+            </a>
+        </div>
+
+        <div class="table-responsive" style="max-height: 70vh; overflow-y: auto;">
+            <table class="table table-hover align-middle text-nowrap" id="productsTable">
+                <thead class="table-light text-secondary sticky-top">
+                    <tr>
+                        <th>Barkod</th>
+                        <th>Məhsul Adı</th>
+                        <th>Kateqoriya</th>
+                        <th>Anbardakı Qalıq</th>
+                        <th>Qiymət</th>
+                        <th class="text-center">Əməliyyatlar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                <span class="badge bg-light text-dark border font-monospace px-2 py-1">
+                                    <i class="fas fa-barcode me-1 text-muted"></i>@item.Barcode
+                                </span>
+                            </td>
+                            <td class="fw-bold text-dark">@item.Name</td>
+                            <td>@item.Category?.Name</td>
+                            <td>
+                                @{
+                                    // Məhsulun fərqli anbar/rəflərdəki miqdarlarını cəmləyirik
+                                    var totalStock = item.Stocks?.Sum(s => s.Quantity) ?? 0;
+                                }
+                                @if (totalStock == 0)
+                                {
+                                    <span class="badge rounded-pill bg-danger-subtle text-danger px-3">Tükənib</span>
+                                }
+                                else if (totalStock < 10)
+                                {
+                                    <span class="badge rounded-pill bg-warning-subtle text-warning px-3 fw-bold">@totalStock ədəd (Kritik)</span>
+                                }
+                                else
+                                {
+                                    <span class="badge rounded-pill bg-success-subtle text-success px-3 fw-bold">@totalStock ədəd</span>
+                                }
+                            </td>
+                            <td class="fw-bold text-primary">@item.SalePrice AZN</td>
+                            <td class="text-center">
+                                <div class="d-flex gap-2 justify-content-center">
+                                    <a asp-controller="Stock" asp-action="Create" asp-route-productId="@item.Id" class="btn btn-sm btn-success" title="Stok Artır">
+                                        <i class="fas fa-plus-circle"></i>
+                                    </a>
+                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-info" title="Detallar">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary" title="Redaktə">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        $(document).ready(function() {
+            $('#productsTable').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.13.4/i18n/az-AZ.json"
+                }
+            });
+        });
+    </script>
+    <script>
+        function confirmDelete(id) {
+            Swal.fire({
+                title: 'Əminsiniz?',
+                text: "Bu məhsul tamamilə silinəcək!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Bəli, sil!',
+                cancelButtonText: 'Ləğv et'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '/Product/Delete/' + id,
+                        type: 'POST',
+                        success: function (response) {
+                            if (response.success) {
+                                Swal.fire('Silindi!', 'Məhsul uğurla silindi.', 'success');
+                                // Səhifəni yeniləmədən sətri silirik
+                                $("#row-" + id).fadeOut(500); 
+                            } else {
+                                Swal.fire('Xəta!', response.message, 'error');
+                            }
+                        },
+                        error: function () {
+                            Swal.fire('Xəta!', 'Serverlə əlaqə kəsildi.', 'error');
+                        }
+                    });
+                }
+            })
+        }
+    </script>
+}

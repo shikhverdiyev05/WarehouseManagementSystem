@@ -1,0 +1,17 @@
+﻿@model WarehouseMS.Models.Warehouse
+
+<div class="glass-card p-4 mx-auto" style="max-width: 600px;">
+    <h3 class="text-primary mb-4">Yeni Anbar</h3>
+    <form asp-action="Create" method="post">
+        <div class="mb-3">
+            <label class="fw-bold">Anbar Adı</label>
+            <input asp-for="Name" class="form-control" placeholder="Məs: Baş Anbar" required />
+        </div>
+        <div class="mb-3">
+            <label class="fw-bold">Ünvan / Yerləşmə</label>
+            <input asp-for="Location" class="form-control" placeholder="Məs: Bakı, Sabunçu ray." />
+        </div>
+        <button type="submit" class="btn btn-primary">Yadda Saxla</button>
+        <a asp-action="Index" class="btn btn-light">Ləğv Et</a>
+    </form>
+</div>

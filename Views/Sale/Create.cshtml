@@ -1,0 +1,112 @@
+﻿@{
+    ViewData["Title"] = "Barkod ilə Satış";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-5">
+        <div class="card shadow-sm border-0" style="border-radius: 15px;">
+            <div class="card-body p-4">
+                <h4 class="mb-4 fw-bold text-secondary">
+                    <i class="fas fa-barcode me-2 text-primary"></i>Barkod ilə Satış
+                </h4>
+                <hr class="opacity-25 mb-4">
+
+                <form asp-action="Create" method="post">
+                    @Html.AntiForgeryToken()
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-secondary">Məhsulun Barkodu</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light"><i class="fas fa-qrcode text-muted"></i></span>
+                            <input type="text" id="barcodeInput" name="barcode" class="form-control form-control-lg fw-bold" placeholder="Barkodu skan edin" autofocus required />
+                        </div>
+                    </div>
+
+                    <div class="mb-3 d-none" id="productInfoBox">
+                        <div class="p-3 bg-light rounded border border-success">
+                            <small class="text-success d-block fw-bold"><i class="fas fa-check-circle me-1"></i> Tapılan Məhsul:</small>
+                            <span id="productNameLabel" class="fw-bold text-dark fs-5">Məhsul Adı</span>
+                        </div>
+                    </div>
+                    <div class="mb-3 d-none" id="productErrorBox">
+                        <div class="p-2 bg-danger-subtle text-danger rounded border border-danger small">
+                            <i class="fas fa-exclamation-triangle me-1"></i> Bu barkoda uyğun məhsul tapılmadı!
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-6 mb-4">
+                            <label class="form-label fw-bold text-secondary">Miqdar</label>
+                            <input type="number" name="quantity" class="form-control" value="1" min="1" required />
+                        </div>
+                        <div class="col-6 mb-4">
+                            <label class="form-label fw-bold text-secondary">Satış Qiyməti (1 ədəd)</label>
+                            <input type="number" id="priceInput" name="price" step="0.01" class="form-control" placeholder="0.00" min="0.01" required />
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2 justify-content-end">
+                        <a asp-action="Index" class="btn btn-light px-4" style="border-radius: 8px;">Geri</a>
+                        <button type="submit" class="btn btn-primary px-4" style="border-radius: 8px; background: var(--primary-color);">
+                            <i class="fas fa-shopping-bag me-1"></i> Satışı Tamamla
+                        </button>
+                    </div>
+                    <input type="hidden" id="LoggedUser" name="loggedUser" value="" />
+
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function () {
+                            // Sadəcə localStorage-da ad varsa onu götürür və gizli input-a yazır.
+                            // Əgər ad yoxdursa, HEÇ NƏ ETMİR (səni logine atmır!)
+                            const savedUser = localStorage.getItem("userFullName");
+                            if (savedUser) {
+                                document.getElementById("LoggedUser").value = savedUser;
+                            }
+                        });
+                    </script>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            var delayTimer;
+
+            $('#barcodeInput').on('input', function () {
+                clearTimeout(delayTimer);
+                var barcode = $(this).val().trim();
+
+                if (barcode.length >= 3) { // Barkod ən az 3 simvol olanda axtarışa başlasın
+                    delayTimer = setTimeout(function () {
+                        $.ajax({
+                            url: '/Product/GetProductByBarcode',
+                            type: 'GET',
+                            data: { barcode: barcode },
+                            success: function (product) {
+                                if (product) {
+                                    // Məhsul tapıldı
+                                    $('#productNameLabel').text(product.name);
+                                    $('#priceInput').val(product.price); // Qiyməti də avtomatik yazır
+
+                                    $('#productInfoBox').removeClass('d-none');
+                                    $('#productErrorBox').addClass('d-none');
+                                } else {
+                                    // Məhsul tapılmadı
+                                    $('#productInfoBox').addClass('d-none');
+                                    $('#productErrorBox').removeClass('d-none');
+                                    $('#priceInput').val('');
+                                }
+                            }
+                        });
+                    }, 400); // 400ms gözləyir ki, istifadəçi yazını bitirsin (Skaner sürətlə vurduqda birbaşa işləyəcək)
+                } else {
+                    $('#productInfoBox').addClass('d-none');
+                    $('#productErrorBox').addClass('d-none');
+                }
+            });
+        });
+    </script>
+}

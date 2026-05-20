@@ -1,0 +1,35 @@
+﻿@model WarehouseMS.Models.Category
+
+@{
+    ViewData["Title"] = "Yeni Kateqoriya";
+}
+
+<div class="container mt-4">
+    <div class="glass-card p-4 mx-auto" style="max-width: 600px;">
+        <h3 class="mb-4 text-primary"><i class="fas fa-folder-plus me-2"></i>Yeni Kateqoriya</h3>
+        <hr />
+
+        <form asp-action="Create" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">Kateqoriya Adı</label>
+                <input asp-for="Name" class="form-control" placeholder="Məs: Elektronika" required />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">Təsvir</label>
+                <textarea asp-for="Description" class="form-control" rows="3" placeholder="Qısa təsvir..."></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+            <div class="mt-4 d-flex gap-2">
+                <button type="submit" class="btn btn-primary px-4">
+                    <i class="fas fa-save me-2"></i>Yadda Saxla
+                </button>
+                <a asp-action="Index" class="btn btn-light px-4">Ləğv Et</a>
+            </div>
+        </form>
+    </div>
+</div>

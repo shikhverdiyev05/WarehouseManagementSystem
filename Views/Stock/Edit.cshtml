@@ -1,0 +1,72 @@
+﻿@model WarehouseMS.Models.Stock
+
+@{
+    ViewData["Title"] = "Stok Düzəlişi";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-sm border-0" style="border-radius: 15px;">
+            <div class="card-body p-4">
+                <h4 class="mb-4 fw-bold text-secondary">
+                    <i class="fas fa-edit me-2 text-primary"></i>Stok Miqdarını Redaktə Et
+                </h4>
+                <hr class="opacity-25 mb-4">
+
+                <div class="alert alert-secondary border-0 p-3 mb-4" style="background: #f8fafc; border-radius: 10px;">
+                    <div class="row text-dark">
+                        <div class="col-6 mb-2">
+                            <small class="text-muted d-block">Məhsul:</small>
+                            <span class="fw-bold">@Model.Product?.Name</span>
+                        </div>
+                        <div class="col-6 mb-2">
+                            <small class="text-muted d-block">Ölçü Vahidi:</small>
+                            <span class="badge bg-secondary">@Model.Product?.Unit</span>
+                        </div>
+                        <div class="col-6">
+                            <small class="text-muted d-block">Yerləşdiyi Anbar:</small>
+                            <span>@Model.Warehouse?.Name</span>
+                        </div>
+                        <div class="col-6">
+                            <small class="text-muted d-block">Yerləşdiyi Rəf:</small>
+                            <span class="badge bg-info text-dark">@Model.Shelf?.ShelfCode</span>
+                        </div>
+                    </div>
+                </div>
+
+                <form asp-action="Edit" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <input type="hidden" asp-for="Id" />
+                    <input type="hidden" asp-for="ProductId" />
+                    <input type="hidden" asp-for="WarehouseId" />
+                    <input type="hidden" asp-for="ShelfId" />
+
+                    <div class="mb-4">
+                        <label asp-for="Quantity" class="form-label fw-bold text-secondary">Yeni Miqdar</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light"><i class="fas fa-boxes text-muted"></i></span>
+                            <input asp-for="Quantity" type="number" class="form-control form-control-lg fw-bold text-primary" placeholder="Miqdarı daxil edin" min="0" required />
+                        </div>
+                        <span asp-validation-for="Quantity" class="text-danger small"></span>
+                    </div>
+
+                    <div class="d-flex gap-2 justify-content-end">
+                        <a asp-action="Index" class="btn btn-light px-4" style="border-radius: 8px;">
+                            <i class="fas fa-arrow-left me-1"></i> Geri
+                        </a>
+                        <button type="submit" class="btn btn-primary px-4" style="border-radius: 8px; background: var(--primary-color);">
+                            <i class="fas fa-save me-1"></i> Yadda Saxla
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

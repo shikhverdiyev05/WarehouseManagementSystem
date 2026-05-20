@@ -1,0 +1,70 @@
+﻿@model IEnumerable<WarehouseMS.Models.Supplier>
+
+@{
+    ViewData["Title"] = "Tədarükçülər";
+}
+
+<div class="card shadow-sm border-0" style="border-radius: 15px;">
+    <div class="card-body p-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4 class="m-0 fw-bold text-secondary">
+                <i class="fas fa-truck me-2 text-primary"></i>Tədarükçü Siyahısı
+            </h4>
+            <a asp-action="Create" class="btn btn-primary btn-sm px-3" style="border-radius: 8px; background: var(--primary-color);">
+                <i class="fas fa-plus me-1"></i> Yeni Tədarükçü Əlavə Et
+            </a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle" id="supplierTable">
+                <thead class="bg-light">
+                    <tr>
+                        <th>Şirkət Adı</th>
+                        <th>Əlaqədar Şəxs</th>
+                        <th>Telefon</th>
+                        <th>E-poçt</th>
+                        <th>Ünvan</th>
+                        <th class="text-center">Əməliyyatlar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="fw-bold text-dark">@item.CompanyName</td>
+                            <td>@item.ContactName</td>
+                            <td>@item.Phone</td>
+                            <td>@item.Email</td>
+                            <td class="text-muted text-truncate" style="max-width: 150px;">@item.Address</td>
+                            <td class="text-center">
+                                <div class="d-flex gap-2 justify-content-center">
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <form asp-action="Delete" asp-route-id="@item.Id" method="post" onsubmit="return confirm('Bu tədarükçünü silmək istədiyinizdən əminsiniz?');">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            $('#supplierTable').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.13.4/i18n/az-AZ.json"
+                }
+            });
+        });
+    </script>
+}

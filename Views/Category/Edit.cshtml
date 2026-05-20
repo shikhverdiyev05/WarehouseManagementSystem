@@ -1,0 +1,18 @@
+﻿@model WarehouseMS.Models.Category
+
+<div class="glass-card p-4 mx-auto" style="max-width: 600px;">
+    <h3 class="mb-4 text-primary">Kateqoriyanı Redaktə Et</h3>
+    <form asp-action="Edit">
+        <input type="hidden" asp-for="Id" />
+        <div class="mb-3">
+            <label class="form-label fw-bold">Kateqoriya Adı</label>
+            <input asp-for="Name" class="form-control" required />
+        </div>
+        <div class="mb-3">
+            <label class="form-label fw-bold">Təsvir</label>
+            <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary px-4">Yadda Saxla</button>
+        <a asp-action="Index" class="btn btn-light">Geri</a>
+    </form>
+</div>

@@ -1,0 +1,67 @@
+﻿@model IEnumerable<WarehouseMS.Models.AuditLog>
+
+@{
+    ViewData["Title"] = "Sistem Audit Logları";
+}
+
+<div class="card shadow-sm border-0" style="border-radius: 15px;">
+    <div class="card-body p-4">
+        <h4 class="mb-4 fw-bold text-secondary">
+            <i class="fas fa-shield-alt me-2 text-danger"></i>Sistem Əməliyyat Logları (Audit Trail)
+        </h4>
+        <p class="text-muted small">Sistemdə baş verən bütün mühüm hərəkətlər, satışlar və dəyişikliklər təhlükəsizlik məqsədilə burada qeyd olunur. Bu məlumatlar silinə bilməz.</p>
+        <hr class="opacity-25 mb-4">
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle" id="auditTable">
+                <thead class="table-dark">
+                    <tr>
+                        <th style="width: 15%;">İstifadəçi</th>
+                        <th style="width: 10%;">Əməliyyat</th>
+                        <th style="width: 10%;">Cədvəl</th>
+                        <th style="width: 45%;">Detallar (Yeni Dəyər)</th>
+                        <th style="width: 20%;">IP Ünvanı</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var log in Model)
+                    {
+                        <tr>
+                            <td class="fw-bold text-primary"><i class="fas fa-user-cog me-1 small"></i>@log.UserId</td>
+                            <td>
+                                @if (log.Action == "Satış")
+                                {
+                                    <span class="badge bg-success-subtle text-success px-2 py-1"><i class="fas fa-cart-arrow-down me-1"></i>Satış</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary-subtle text-secondary px-2 py-1">@log.Action</span>
+                                }
+                            </td>
+                            <td><code class="text-dark">@log.TableName</code></td>
+                            <td class="small text-dark" style="background: #fdfdfd; font-family: monospace;">
+                                @log.NewValue
+                            </td>
+                            <td class="text-muted small">
+                                <i class="fas fa-network-wired me-1"></i>@log.IpAddress
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            $('#auditTable').DataTable({
+                "order": [], // Sıralamanı backend-dən gəldiyi kimi (ən sonuncu yuxarıda) saxlayır
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.13.4/i18n/az-AZ.json"
+                }
+            });
+        });
+    </script>
+}

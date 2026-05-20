@@ -1,0 +1,45 @@
+﻿@model WarehouseMS.Models.Product
+
+<div class="glass-card p-4 mx-auto" style="max-width: 800px;">
+    <h3 class="text-primary mb-4">Yeni Məhsul</h3>
+
+    <form asp-action="Create">
+        <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label>Məhsul Adı</label>
+                <input asp-for="Name" class="form-control" required />
+            </div>
+            <div class="col-md-6 mb-3">
+                <label>Kateqoriya</label>
+                <select asp-for="CategoryId" class="form-select" asp-items="ViewBag.CategoryId">
+                    <option value="">-- Seçin --</option>
+                </select>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label>Maya Dəyəri</label>
+                <input asp-for="CostPrice" type="number" step="0.01" class="form-control" required />
+            </div>
+            <div class="col-md-6 mb-3">
+                <label>Satış Qiyməti</label>
+                <input asp-for="SalePrice" type="number" step="0.01" class="form-control" required />
+            </div>
+            <div class="col-md-6 mb-3">
+                <label>Barkod</label>
+                <input asp-for="Barcode" class="form-control" />
+            </div>
+            <div class="col-md-6 mb-3">
+                <label>Ölçü Vahidi (Ədəd, Kq)</label>
+                <input asp-for="Unit" class="form-control" />
+            </div>
+            <div class="col-md-6 mb-3">
+                <label>SKU</label>
+                <input asp-for="SKU" class="form-control" />
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Yadda Saxla</button>
+        <a asp-action="Index" class="btn btn-secondary">Geri</a>
+    </form>
+</div>

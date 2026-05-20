@@ -1,0 +1,90 @@
+﻿@model WarehouseMS.Models.Stock
+
+@{
+    ViewData["Title"] = "Yeni Stok Girişi";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-sm border-0" style="border-radius: 15px;">
+            <div class="card-body p-4">
+                <h4 class="mb-4 fw-bold text-secondary">
+                    <i class="fas fa-plus-circle me-2 text-success"></i>Anbara Yeni Mədaxil
+                </h4>
+                <hr class="opacity-25 mb-4">
+
+                <form asp-action="Create" method="post">
+                    @Html.AntiForgeryToken()
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-secondary">Məhsul</label>
+                        <select name="ProductId" class="form-select" asp-items="ViewBag.Products" required>
+                            <option value="">-- Məhsul Seçin --</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-secondary">Anbar</label>
+                        <select id="warehouseSelect" name="WarehouseId" class="form-select" asp-items="ViewBag.Warehouses" required>
+                            <option value="">-- Anbar Seçin --</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-secondary">Rəf</label>
+                        <select id="shelfSelect" name="ShelfId" class="form-select" required disabled>
+                            <option value="">-- Əvvəlcə Anbar Seçin --</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Quantity" class="form-label fw-bold text-secondary">Daxil Olan Miqdar</label>
+                        <input asp-for="Quantity" type="number" class="form-control" min="1" value="1" required />
+                        <span asp-validation-for="Quantity" class="text-danger small"></span>
+                    </div>
+
+                    <div class="d-flex gap-2 justify-content-end">
+                        <a asp-action="Index" class="btn btn-light px-4" style="border-radius: 8px;">Ləğv Et</a>
+                        <button type="submit" class="btn btn-success px-4" style="border-radius: 8px;">
+                            <i class="fas fa-check me-1"></i> Mədaxil Et
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#warehouseSelect').change(function () {
+                var warehouseId = $(this).val();
+                var $shelfSelect = $('#shelfSelect');
+
+                if (warehouseId) {
+                    $shelfSelect.empty().append('<option value="">-- Rəf Seçin --</option>');
+                    $.ajax({
+                        url: '/Stock/GetShelves', // Sənin layihəndəki rəf gətirən AJAX metodu
+                        type: 'GET',
+                        data: { warehouseId: warehouseId },
+                        success: function (data) {
+                            if (data && data.length > 0) {
+                                $.each(data, function (index, item) {
+                                    // Sənin modelində ShelfCode və ya Code ola bilər, yoxlayarsan
+                                    $shelfSelect.append('<option value="' + item.id + '">' + (item.shelfCode || item.code) + '</option>');
+                                });
+                                $shelfSelect.removeAttr('disabled');
+                            } else {
+                                $shelfSelect.empty().append('<option value="">Rəf tapılmadı</option>').attr('disabled', 'disabled');
+                            }
+                        }
+                    });
+                } else {
+                    $shelfSelect.empty().append('<option value="">-- Əvvəlcə Anbar Seçin --</option>').attr('disabled', 'disabled');
+                }
+            });
+        });
+    </script>
+}

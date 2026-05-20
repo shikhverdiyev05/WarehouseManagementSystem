@@ -1,0 +1,38 @@
+﻿@model WarehouseMS.Models.StockMovement
+
+<div class="container mt-4">
+    <div class="glass-card p-4 mx-auto" style="max-width: 600px;">
+        <h3 class="text-primary mb-4"><i class="fas fa-exchange-alt me-2"></i>Stok Giriş / Çıxış</h3>
+
+        <form asp-action="Create">
+            <div class="mb-3">
+                <label class="form-label fw-bold">Əməliyyat Tipi</label>
+                <select asp-for="Type" class="form-select border-primary shadow-sm">
+                    <option value="In">Mədaxil (Anbara Giriş)</option>
+                    <option value="Out">Məxaric (Anbardan Çıxış)</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">Məhsul</label>
+                <select asp-for="ProductId" class="form-select" asp-items="ViewBag.Products">
+                    <option value="">-- Məhsul Seçin --</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">Anbar</label>
+                <select name="WarehouseId" class="form-select" asp-items="ViewBag.Warehouses" required>
+                    <option value="">-- Anbarı Seçin --</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">Miqdar</label>
+                <input asp-for="Quantity" type="number" min="1" class="form-control" />
+            </div>
+
+            <button type="submit" class="btn btn-success w-100 py-2 fw-bold">Əməliyyatı Tamamla</button>
+        </form>
+    </div>
+</div>
